@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Happy Birthday My Love!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        :root {
+            --primary: #ff8fa3;
+            --primary-dark: #e06c85;
+            --secondary: #c77dff;
+            --bg-dark: #1a0b2e;
+            --text-light: #fff0f5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        body { font-family: 'Poppins', sans-serif; overflow-x: hidden; color: var(--text-light); background-color: var(--bg-dark); -webkit-tap-highlight-color: transparent; }
+
+        /* --- GLOBAL LAYOUT UTILS --- */
+        .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: 1; pointer-events: none; }
+        
+        /* Container yang fleksibel untuk semua layar */
+        .container { 
+            width: 100%; 
+            padding-right: 15px; 
+            padding-left: 15px; 
+            margin-right: auto; 
+            margin-left: auto; 
+            position: relative; 
+            z-index: 2; 
+            text-align: center;
+        }
+
+        /* Responsive Breakpoints untuk Container */
+        @media (min-width: 576px) { .container { max-width: 540px; } }
+        @media (min-width: 768px) { .container { max-width: 720px; } }
+        @media (min-width: 992px) { .container { max-width: 960px; } }
+        @media (min-width: 1200px) { .container { max-width: 1140px; } }
+
+        section { padding: 60px 0; position: relative; overflow: hidden; }
+
+        /* --- ANIMATIONS --- */
+        @keyframes float-smooth { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
+        .floating { animation: float-smooth 4s ease-in-out infinite; }
+        
+        /* =========================================
+           SECTION 1: HERO (Responsive)
+           ========================================= */
+        .hero {
+            height: 100vh; position: relative; display: flex; justify-content: center; align-items: center; text-align: center;
+            background: radial-gradient(circle at center, #4a192c 0%, #1a0b2e 100%);
+        }
+        #particles-js { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        
+        /* Elemen Dekorasi */
+        .floater { position: absolute; bottom: -100px; animation: riseUp linear infinite; opacity: 0.8; z-index: 0; }
+        @keyframes riseUp { 0% { bottom: -100px; opacity: 0; } 10% { opacity: 1; } 100% { bottom: 120vh; transform: translateX(50px) rotate(360deg); opacity: 0; } }
+
+        .bunting-container { position: absolute; top: 0; left: 0; width: 100%; height: 80px; z-index: 5; display: flex; justify-content: space-around; pointer-events: none; }
+        .bunting-rope { position: absolute; top: 0; width: 120%; left: -10%; height: 40px; border-bottom: 2px solid rgba(255,255,255,0.5); border-radius: 50%; }
+        .flag { width: 30px; height: 40px; background: var(--primary); clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: top center; animation: sway 3s ease-in-out infinite alternate; margin-top: 28px; }
+        @keyframes sway { from { transform: rotate(-5deg); } to { transform: rotate(5deg); } }
+        .flag:nth-child(odd) { background: var(--secondary); } 
+        .flag:nth-child(3n) { background: #ffd700; }
+
+        .hero-content { z-index: 10; width: 100%; padding: 0 20px; }
+        
+        /* Font Responsif: Menggunakan clamp agar mulus dari HP ke PC */
+        .hero h1 { 
+            font-family: 'Dancing Script', cursive; 
+            font-size: clamp(3rem, 8vw, 6rem); /* Minimal 3rem, Ideal 8vw, Maksimal 6rem */
+            margin-bottom: 15px; 
+            text-shadow: 0 0 15px rgba(255,143,163,0.8); 
+            background: linear-gradient(to bottom, #fff, #ff8fa3); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            line-height: 1.2;
+        }
+        
+        .typing-container { 
+            font-size: clamp(0.9rem, 2vw, 1.5rem);
+            background: rgba(0,0,0,0.4); padding: 10px 20px; border-radius: 50px; 
+            backdrop-filter: blur(5px); border: 1px solid rgba(255,143,163,0.5); 
+            display: inline-block; max-width: 90%;
+        }
+        .typing-text { border-right: 2px solid var(--primary); padding-right: 5px; animation: blink 0.7s infinite; }
+        @keyframes blink { 50% { border-color: transparent; } }
+
+        /* =========================================
+           SECTION 2: ABOUT (Layout Flexbox)
+           ========================================= */
+        #about { background-color: #120524; border-top: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .firefly { position: absolute; width: 4px; height: 4px; background-color: #fffac1; border-radius: 50%; box-shadow: 0 0 10px #fffac1; animation: firefly-move linear infinite; pointer-events: none; }
+        @keyframes firefly-move { 0%, 100% { transform: translate(0, 0) scale(1); opacity: 0; } 20% { opacity: 1; } 50% { transform: translate(50px, -50px) scale(1.2); } 80% { opacity: 0.8; } }
+
+        h2 { font-family: 'Dancing Script', cursive; font-size: clamp(2.5rem, 5vw, 4rem); margin-bottom: 40px; color: var(--primary); display: inline-block; }
+        
+        /* Flex Container: Kolom di HP, Baris di Laptop */
+        .about-flex { 
+            display: flex; 
+            flex-direction: column; /* Default Mobile: Atas-Bawah */
+            align-items: center; 
+            justify-content: center; 
+            gap: 40px; 
+        }
+
+        /* Override untuk Layar Besar (Tablet/Laptop) */
+        @media (min-width: 992px) {
+            .about-flex { flex-direction: row; text-align: left; } /* Side-by-side */
+            .profile-card { text-align: center; } 
+        }
+        
+        .profile-card { 
+            background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); padding: 30px; 
+            border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; max-width: 450px;
+        }
+        .profile-img { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary); box-shadow: 0 0 20px rgba(255,143,163,0.3); margin-bottom: 20px; }
+
+        .magic-items { display: flex; flex-direction: column; gap: 20px; width: 100%; max-width: 450px; }
+        .magic-item { cursor: pointer; padding: 15px; border-radius: 15px; background: rgba(255,255,255,0.05); transition: transform 0.2s; border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 20px; }
+        .magic-item:hover { background: rgba(255,255,255,0.1); }
+        
+        .flower-icon-container { font-size: 2.5rem; color: #ff6b81; transition: 0.8s; min-width: 50px; text-align: center; }
+        .flower-icon-container.bloomed { color: #ff9ff3; transform: scale(1.2) rotate(15deg); }
+        .heart-icon-container { font-size: 2.5rem; color: #e01e37; min-width: 50px; text-align: center; }
+        .magic-text h3 { margin: 0; font-size: 1.1rem; color: var(--primary); }
+        .magic-text p { margin: 0; font-size: 0.85rem; opacity: 0.8; }
+
+        /* =========================================
+           SECTION 3: FUN ZONE
+           ========================================= */
+        #fun-zone { background-color: #1a0b2e; }
+        .party-doodle { position: absolute; color: rgba(255,255,255,0.1); animation: fall-rotate linear infinite; pointer-events: none; z-index: 1; }
+        @keyframes fall-rotate { 0% { transform: translateY(-100px) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(100vh) rotate(360deg); opacity: 0; } }
+
+        .fun-container { display: flex; flex-direction: column; gap: 40px; align-items: center; position: relative; z-index: 2; width: 100%; }
+        
+        .balloon-wrapper { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+        .balloon { 
+            width: clamp(50px, 10vw, 80px); height: clamp(70px, 12vw, 100px); /* Ukuran balon responsif */
+            background: var(--primary); border-radius: 50%; position: relative; cursor: pointer; 
+            animation: float-smooth 3s ease-in-out infinite; display: flex; justify-content: center; align-items: center; 
+            font-size: 1.2rem; color: rgba(255,255,255,0.8); 
+        }
+        .balloon::before { content: ''; position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); width: 2px; height: 30px; background: rgba(255,255,255,0.5); }
+        .b1 { background: #ff7675; } .b2 { background: #74b9ff; } .b3 { background: #55efc4; } .b4 { background: #a29bfe; } .b5 { background: #ffeaa7; color:#d63031; }
+
+        .coupon-machine { background: #2d3436; padding: 25px; border-radius: 20px; border: 3px solid var(--secondary); max-width: 500px; width: 100%; position: relative; z-index: 5; }
+        .coupon-display { background: #fff; color: #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; font-family: 'Courier New', monospace; font-weight: bold; min-height: 60px; display: flex; align-items: center; justify-content: center; border: 2px dashed #333; font-size: 1rem; }
+        .coupon-btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 50px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 var(--primary-dark); width: 100%; }
+
+        /* =========================================
+           SECTION 4: GIFT (Kata-kata Panjang)
+           ========================================= */
+        #gift { background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%); overflow: hidden; min-height: 100vh; }
+        .shooting-star { position: absolute; width: 100px; height: 2px; background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,1)); animation: shooting 3s linear infinite; pointer-events: none; }
+        @keyframes shooting { 0% { transform: translateX(0) translateY(0) rotate(45deg) scale(0); opacity: 1; } 100% { transform: translateX(300px) translateY(300px) rotate(45deg) scale(1); opacity: 0; } }
+
+        .bear-container { cursor: pointer; margin-bottom: 30px; display: inline-block; }
+        .bear-icon { font-size: clamp(5rem, 15vw, 8rem); color: #d4a373; text-shadow: 0 5px 15px rgba(0,0,0,0.3); } 
+        
+        .gift-icon { font-size: clamp(6rem, 20vw, 10rem); color: var(--primary); filter: drop-shadow(0 0 20px var(--primary)); transition: color 0.3s; }
+
+        /* STYLE SURAT CINTA (MOBILE FRIENDLY & PANJANG) */
+        .hidden-message { 
+            display: none; 
+            background: #fff; 
+            color: #2c3e50;
+            padding: 40px 30px; 
+            border-radius: 20px; 
+            width: 100%;
+            max-width: 700px; /* Agar tidak terlalu lebar di PC */
+            margin: 20px auto; 
+            text-align: left; /* Teks rata kiri agar enak dibaca */
+            position: relative; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border: 5px solid #ffcad4;
+        }
+        .hidden-message h3 { 
+            font-family: 'Dancing Script'; 
+            font-size: clamp(2rem, 5vw, 3rem); 
+            color: #d63384; 
+            margin-bottom: 20px; 
+            text-align: center; 
+            border-bottom: 2px dashed #ffcad4;
+            padding-bottom: 15px;
+        }
+        .hidden-message p { 
+            font-size: clamp(0.95rem, 1.1vw, 1.1rem); 
+            line-height: 1.8; 
+            margin-bottom: 15px;
+            color: #555;
+        }
+        .signature { text-align: center; margin-top: 30px; font-weight: bold; color: #d63384; font-family: 'Dancing Script'; font-size: 1.5rem; }
+
+        footer { padding: 30px 10px; background: #000; font-size: 0.8rem; text-align: center; margin-top: 50px;}
+
+    </style>
+</head>
+<body>
+
+    <audio id="backsound" loop>
+        <source src="musik ultah.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="hero">
+        <div class="bunting-container">
+            <div class="bunting-rope"></div>
+            <div class="flag"></div><div class="flag"></div><div class="flag"></div>
+            <div class="flag"></div><div class="flag"></div><div class="flag"></div>
+            <div class="flag"></div><div class="flag"></div><div class="flag"></div>
+        </div>
+
+        <div class="bg-overlay" id="hero-emojis"></div>
+        <div id="particles-js"></div> 
+        
+        <div class="hero-content">
+            <h1 class="animate__animated animate__zoomInDown animate__slow">Happy Birthday, Sayang!</h1>
+            <div class="typing-container animate__animated animate__fadeInUp animate__delay-1s">
+                <span class="typing-text" id="typing"></span>
+            </div>
+            <div style="margin-top: 40px;">
+                <button onclick="document.getElementById('about').scrollIntoView()" class="animate__animated animate__pulse animate__infinite" 
+                style="background: white; color: var(--primary); border: none; padding: 12px 30px; border-radius: 30px; font-weight: bold; cursor: pointer; box-shadow: 0 5px 20px rgba(0,0,0,0.3); font-size: 1rem; transition: transform 0.2s;">
+                    Mulai Petualangan 🚀
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <section id="about">
+        <div class="bg-overlay" id="firefly-container"></div>
+        <div class="container">
+            <h2 data-aos="fade-up">The Birthday Star</h2>
+            
+            <div class="about-flex">
+                <div class="profile-card floating" data-aos="fade-right">
+                    <img src="foto awal.jpg" alt="Foto Pacar" class="profile-img">
+                    <h3>Evaa Amalia 💘✨</h3>
+                    <p style="margin-top: 15px; line-height: 1.6; opacity: 0.9;">
+                        Untuk seseorang yang senyumnya adalah obat dari segala lelahku.
+                        Hari ini dunia lebih cerah karena ada kamu di dalamnya.
+                    </p>
+                </div>
+
+                <div class="magic-items">
+                    <div class="magic-item" data-aos="zoom-in" data-aos-delay="200" onclick="bloomFlower(this)">
+                        <div class="flower-icon-container"><i class="fa-solid fa-seedling"></i></div>
+                        <div class="magic-text">
+                            <h3 id="flowerText">Kuncup Harapan</h3>
+                            <p>Sentuh untuk menyiram 💧</p>
+                        </div>
+                    </div>
+
+                    <div class="magic-item" data-aos="zoom-in" data-aos-delay="400" onclick="touchHeart()">
+                        <div class="heart-icon-container"><i class="fa-solid fa-heart"></i></div>
+                        <div class="magic-text">
+                            <h3>Isi Hati</h3>
+                            <p>Sentuh untuk mendengarkan... ❤️</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="fun-zone">
+        <div class="bg-overlay" id="doodle-container"></div>
+        <div class="container">
+            <h2 data-aos="fade-up">Fun Zone 🎢</h2>
+            <p style="margin-bottom: 30px; opacity: 0.8; font-weight: bold;" data-aos="fade-up">Mainkan dulu games-nya!</p>
+            
+            <div class="fun-container">
+                <div data-aos="zoom-in" style="width: 100%;">
+                    <h3 style="margin-bottom: 15px; color: var(--secondary); font-size: 1.2rem;">🎈 Pecahkan Balon!</h3>
+                    <div class="balloon-wrapper">
+                        <div class="balloon b1" onclick="popBalloon(this, 'Makin cantik & glowing! ✨')">?</div>
+                        <div class="balloon b2" onclick="popBalloon(this, 'Rezekinya lancar terus! 💸')">?</div>
+                        <div class="balloon b3" onclick="popBalloon(this, 'Sehat selalu sayangku! 💪')">?</div>
+                        <div class="balloon b4" onclick="popBalloon(this, 'Bahagia dunia akhirat! 🤲')">?</div>
+                        <div class="balloon b5" onclick="popBalloon(this, 'Makin sayang aku! ❤️')">?</div>
+                    </div>
+                </div>
+                
+                <div style="width: 80%; height: 1px; background: rgba(255,255,255,0.1);"></div>
+                
+                <div data-aos="fade-up" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                    <h3 style="margin-bottom: 15px; color: var(--secondary); font-size: 1.2rem;">🎟️ Mesin Kupon Cinta</h3>
+                    <div class="coupon-machine">
+                        <div class="coupon-display" id="couponResult">???</div>
+                        <button class="coupon-btn" onclick="getCoupon()">AMBIL KUPON! 🎰</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="gift">
+        <div class="bg-overlay" id="star-container"></div>
+        <div class="container">
+            <h2 data-aos="fade-up">Final Surprise</h2>
+            <p style="margin-bottom: 40px; opacity: 0.8; font-weight: bold;" data-aos="fade-up">Sapa penjaga kadonya dulu ya!</p>
+            
+            <div class="bear-container floating" data-aos="zoom-in-up" onclick="interactBear(this)">
+                <i class="fa-solid fa-teddy-bear bear-icon"></i>
+                <p style="margin-top:10px; font-weight: bold;">Klik aku! 🐻</p>
+            </div>
+            
+            <div class="gift-wrapper" data-aos="zoom-in" data-aos-delay="300">
+                <div class="gift-box-container" id="giftBox" onclick="openGiftGate()">
+                    <i class="fas fa-gift gift-icon"></i>
+                    <p class="tap-text floating" style="margin-top: 15px; font-size: 1.1rem; font-weight: bold;">Ketuk untuk Buka Kado! 🎁</p>
+                </div>
+            </div>
+
+            <div class="hidden-message animate__animated animate__fadeInUp" id="message">
+                <h3>Selamat Ulang Tahun, Cantik! 🎉</h3>
+                
+                <p>Hai kamu, peran utama di cerita hidupku.</p>
+                
+                <p>Selamat bertambah usia ya! Tau gak? Hari ini bukan cuma spesial buat kamu, tapi juga buat dunia—karena hari ini, seseorang yang senyumnya paling manis dan hatinya paling tulus dilahirkan.</p>
+
+                <p>Aku mau bilang terima kasih. Terima kasih sudah bertahan sejauh ini. Terima kasih sudah jadi manusia yang kuat, yang selalu berusaha melakukan yang terbaik meski kadang capek dan berat. Aku bangga banget sama kamu, sama prosesmu, sama semua hal kecil yang kamu lalui.</p>
+
+                <p>Di usiamu yang baru ini, doaku sederhana tapi tulus: Semoga bahagia selalu memelukmu, semoga cemasmu berkurang, dan semoga Tuhan mempermudah segala langkah kakimu menuju impian-impian besarmu.</p>
+                
+                <p>Maaf ya cuma bisa kasih website sederhana ini. Tapi percayalah, setiap baris kodenya aku tulis sambil mikirin kamu, sambil berharap senyum itu merekah di wajahmu pas bacanya.</p>
+
+                <p>Tetaplah bersinar, tetaplah jadi Evaa yang aku kenal. Aku akan selalu ada di sini, jadi pendukung nomer satumu.</p>
+
+                <div class="signature">
+                    Love you, always. ❤️<br>
+                    <button onclick="finalSurprise()" style="margin-top:20px; padding: 12px 30px; background-color: #d63384; border: none; color: white; border-radius: 50px; cursor: pointer; font-size:1rem; box-shadow: 0 5px 15px rgba(214, 51, 132, 0.4);">Terima Pelukan 🤗</button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <p>Dibuat dengan segenap hati 💖 spesial untukmu.</p>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <script>
+        // Init AOS
+        AOS.init({ duration: 800, once: true, offset: 50 });
+        particlesJS("particles-js", { "particles": { "number": { "value": 30 }, "color": { "value": "#ffffff" }, "shape": { "type": "circle" }, "opacity": { "value": 0.5, "random": true }, "size": { "value": 3, "random": true }, "move": { "enable": true, "speed": 1 } }, "interactivity": { "events": { "onhover": { "enable": false } } } });
+
+        /* --- ANIMATIONS --- */
+        function createHeroEmojis() {
+            const container = document.getElementById('hero-emojis');
+            const emojis = ['🎈', '❤️', '✨', '🎂', '🎁', '💖'];
+            if(window.innerWidth < 768 && Math.random() > 0.5) return; // Reduce load on mobile
+            setInterval(() => {
+                const el = document.createElement('div');
+                el.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                el.classList.add('floater');
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                el.style.fontSize = (Math.random() * 2 + 1) + 'rem';
+                container.appendChild(el);
+                setTimeout(() => el.remove(), 10000);
+            }, 1500);
+        }
+        createHeroEmojis();
+
+        function createFireflies() {
+            const container = document.getElementById('firefly-container');
+            const count = window.innerWidth < 768 ? 15 : 30;
+            for(let i=0; i<count; i++) {
+                const fly = document.createElement('div');
+                fly.classList.add('firefly');
+                fly.style.left = Math.random() * 100 + '%';
+                fly.style.top = Math.random() * 100 + '%';
+                fly.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                fly.style.animationDelay = Math.random() + 's';
+                container.appendChild(fly);
+            }
+        }
+        createFireflies();
+
+        function createPartyDoodles() {
+            const container = document.getElementById('doodle-container');
+            const icons = ['fa-music', 'fa-star', 'fa-bolt', 'fa-heart', 'fa-crown', 'fa-gift'];
+            if(window.innerWidth < 768) return; 
+            setInterval(() => {
+                const el = document.createElement('i');
+                const iconClass = icons[Math.floor(Math.random() * icons.length)];
+                el.classList.add('fa-solid', iconClass, 'party-doodle');
+                el.style.left = Math.random() * 100 + '%';
+                el.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                el.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                container.appendChild(el);
+                setTimeout(() => el.remove(), 6000);
+            }, 1000);
+        }
+        createPartyDoodles();
+
+        function createShootingStars() {
+            const container = document.getElementById('star-container');
+            setInterval(() => {
+                const star = document.createElement('div');
+                star.classList.add('shooting-star');
+                star.style.left = (Math.random() * 100) - 50 + '%';
+                star.style.top = (Math.random() * 50) + '%';
+                star.style.animationDuration = (Math.random() * 1 + 1) + 's';
+                container.appendChild(star);
+                setTimeout(() => star.remove(), 2000);
+            }, 2000);
+        }
+        createShootingStars();
+
+        /* --- LOGIC UTAMA --- */
+        window.onload = function() { askToEnter(); };
+
+        function playMusic() {
+            var audio = document.getElementById("backsound");
+            if(audio) { audio.volume = 0.5; audio.play().catch(e => console.log(e)); }
+        }
+
+        function askToEnter() {
+            Swal.fire({
+                title: 'Permisi! 👸',
+                text: 'Ada paket spesial nih buat Birthday Girl. Boleh masuk?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Boleh dong! ✨',
+                cancelButtonText: 'Gak dulu',
+                confirmButtonColor: '#ff8fa3',
+                cancelButtonColor: '#d33',
+                allowOutsideClick: false,
+                backdrop: `rgba(26, 11, 46, 0.98)`
+            }).then((result) => {
+                if (result.isConfirmed) { playMusic(); startCelebration(); } 
+                else { rejectEntry(); }
+            });
+        }
+
+        function rejectEntry() {
+            Swal.fire({
+                title: 'Yah... 🥺',
+                text: 'Masa gak boleh masuk? Plisss... Aku udah nunggu lama lho.',
+                icon: 'error',
+                confirmButtonText: 'Iya deh, masuk 🙄',
+                allowOutsideClick: false
+            }).then(() => { playMusic(); startCelebration(); });
+        }
+
+        function startCelebration() {
+            typeWriter();
+            var duration = 3000;
+            var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 } });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 } });
+                if (Date.now() < end) { requestAnimationFrame(frame); }
+            }());
+            const Toast = Swal.mixin({ toast: true, position: 'top', showConfirmButton: false, timer: 3000 });
+            Toast.fire({ icon: 'success', title: 'Happy Birthday! 🎉' });
+        }
+
+        const textToType = "Semoga harimu seindah senyumanmu...";
+        const typeElement = document.getElementById('typing');
+        let index = 0;
+        function typeWriter() {
+            if (index < textToType.length) {
+                typeElement.innerHTML += textToType.charAt(index);
+                index++;
+                setTimeout(typeWriter, 100);
+            }
+        }
+
+        /* --- INTERACTION --- */
+        let isBloomed = false;
+        function bloomFlower(element) {
+            const iconContainer = element.querySelector('.flower-icon-container');
+            const icon = iconContainer.querySelector('i');
+            const text = element.querySelector('#flowerText');
+            if (!isBloomed) {
+                iconContainer.classList.add('bloomed');
+                setTimeout(() => { icon.classList.remove('fa-seedling'); icon.classList.add('fa-spa'); text.innerText = "Tumbuh Bahagia! 🌸"; }, 300); 
+                isBloomed = true;
+            } else {
+                iconContainer.classList.remove('bloomed');
+                setTimeout(() => { icon.classList.remove('fa-spa'); icon.classList.add('fa-seedling'); text.innerText = "Kuncup Harapan"; }, 300);
+                isBloomed = false;
+            }
+        }
+
+        function touchHeart() {
+            confetti({ particleCount: 30, spread: 60, origin: { y: 0.7 } });
+            Swal.fire({
+                title: 'Tentang Kamu',
+                text: 'Kamu itu lebih berharga dari yang kamu tau. You are enough! ❤️',
+                confirmButtonText: 'Aww.. 🥺',
+                confirmButtonColor: '#e01e37'
+            });
+        }
+
+        function popBalloon(element, message) {
+            element.style.transform = "scale(1.5)"; element.style.opacity = "0";
+            confetti({ particleCount: 20, spread: 40, origin: { y: 0.5 } });
+            setTimeout(() => {
+                element.style.visibility = "hidden";
+                Swal.fire({ icon: 'success', title: 'Pop!', text: message, timer: 1500, showConfirmButton: false, toast: true, position: 'top' });
+            }, 200);
+        }
+
+        const animationCoupons = ["Pijat Punggung", "Nonton Bioskop", "Es Krim Gratis", "Peluk Sepuasnya", "Makan Enak"];
+        const riggedCoupons = ["Peluk Sepuasnya"];
+        function getCoupon() {
+            const display = document.getElementById('couponResult');
+            let counter = 0;
+            const interval = setInterval(() => {
+                display.innerText = animationCoupons[Math.floor(Math.random() * animationCoupons.length)];
+                counter++;
+                if (counter > 15) {
+                    clearInterval(interval);
+                    const finalCoupon = riggedCoupons[Math.floor(Math.random() * riggedCoupons.length)];
+                    display.innerText = finalCoupon;
+                    Swal.fire({ title: 'Selamat!', text: 'Dapat: ' + finalCoupon, icon: 'success', confirmButtonText: 'Asiiik! 😍', confirmButtonColor: '#ff8fa3' });
+                    confetti({ particleCount: 50, spread: 80, origin: { y: 0.6 } });
+                }
+            }, 100);
+        }
+
+        function interactBear(element) {
+            element.querySelector('.bear-icon').classList.add('bear-jumping');
+            Swal.fire({ title: 'Halo! 🐻', text: 'Selamat ulang tahun ya! Kado spesial sudah menunggu di bawah.', confirmButtonColor: '#c77dff' })
+            .then(() => { element.querySelector('.bear-icon').classList.remove('bear-jumping'); });
+        }
+
+        function openGiftGate() {
+            Swal.fire({
+                title: 'Janji Dulu! 🤚', text: 'Apakah kamu bersedia untuk tersenyum hari ini?', icon: 'warning',
+                showCancelButton: true, confirmButtonText: 'Aku Janji! ✌️', cancelButtonText: 'Enggak', confirmButtonColor: '#ff8fa3'
+            }).then((result) => {
+                if (result.isConfirmed) { revealGift(); } 
+                else { Swal.fire({ icon: 'error', title: 'Duh..', text: 'Harus janji dulu dong!' }); }
+            });
+        }
+
+        function revealGift() {
+            document.getElementById('giftBox').style.display = 'none';
+            document.getElementById('message').style.display = 'block';
+            setTimeout(() => { document.getElementById('message').scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100);
+            confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 } });
+        }
+
+        function finalSurprise() {
+             Swal.fire({ title: '🤗 MENGIRIM PELUKAN HANGAT...', timer: 2000, didOpen: () => { Swal.showLoading() } })
+             .then(() => { Swal.fire({ icon: 'success', title: 'Terkirim!', text: 'Semoga sampai ke hatimu. Love you! ❤️' }); });
+        }
+    </script>
+</body>
+</html>
